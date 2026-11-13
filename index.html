@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ru" data-palette="bordeaux">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Vanilla Bun — музыкальный стример</title>
+  <meta name="description" content="Музыкальные стримы Vanilla Bun: кавера, свои песни и уют. Стримы в четверг и воскресенье в 19:00 (МСК). Все ссылки в одном месте.">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#f6eeea">
+
+  <!-- Превью при отправке ссылки (Telegram, VK, соцсети).
+       Адреса картинок ДОЛЖНЫ быть абсолютными. Если репозиторий или аккаунт
+       называются иначе — поправь адрес ниже. -->
+  <link rel="canonical" href="https://vanilla-bun.github.io/linkbio/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Vanilla Bun">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:title" content="Vanilla Bun — музыкальный стример">
+  <meta property="og:description" content="Кавера, свои песни и уютные стримы. Четверг и воскресенье в 19:00 (МСК). Все ссылки здесь.">
+  <meta property="og:url" content="https://vanilla-bun.github.io/linkbio/">
+  <meta property="og:image" content="https://vanilla-bun.github.io/linkbio/assets/og.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Vanilla Bun — музыкальный стример">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Vanilla Bun — музыкальный стример">
+  <meta name="twitter:description" content="Кавера, свои песни и уютные стримы. Четверг и воскресенье в 19:00 (МСК).">
+  <meta name="twitter:image" content="https://vanilla-bun.github.io/linkbio/assets/og.jpg">
+
+  <link rel="icon" href="assets/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+
+  <!-- Тема ставится ДО отрисовки, чтобы не было вспышки светлой темы -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("lb-theme");          // "light" | "dark" | null
+        var dark = saved ? saved === "dark"
+                         : window.matchMedia("(prefers-color-scheme: dark)").matches;
+        document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+        document.querySelector('meta[name="theme-color"]')
+                .setAttribute("content", dark ? "#1d0f13" : "#f6eeea");
+      } catch (e) {
+        document.documentElement.setAttribute("data-theme", "light");
+      }
+    })();
+  </script>
+
+  <link rel="stylesheet" href="css/themes.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="page" id="page">
+    <header class="hero" id="hero"></header>
+    <main class="content" id="content"></main>
+    <footer class="footer" id="footer"></footer>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <noscript>
+    <p style="padding:24px;text-align:center;font-family:sans-serif">
+      Для страницы нужен JavaScript. Смотреть стримы:
+      <a href="https://www.twitch.tv/vanilla__bun">Twitch</a> ·
+      <a href="https://youtube.com/@_vanilla_bun_">YouTube</a> ·
+      <a href="https://live.vkvideo.ru/vanillabun">VK Видео</a>
+    </p>
+  </noscript>
+
+  <script src="config.js"></script>
+  <script src="js/icons.js"></script>
+  <script src="js/schedule.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+/* =====================================================================
+   ПАЛИТРЫ
+   Каждая палитра — это набор цветовых переменных для светлой и тёмной темы.
+   Чтобы добавить новую палитру:
+     1. скопируй оба блока "bordeaux" ниже и поменяй название и цвета;
+     2. в config.js поставь theme.palette: "название".
+   Больше ничего в коде менять не нужно: style.css использует только переменные.
+   ===================================================================== */
+
+/* ---------- Бордо · светлая (жемчужный крем) ---------- */
+:root[data-palette="bordeaux"][data-theme="light"] {
+  --bg:            #f6eeea;
+  --bg-outer:      #ebdcd7;   /* фон вокруг колонки на широких экранах */
+  --surface:       #fffaf7;
+  --surface-hover: #fff3ee;
+  --text:          #3a1a22;
+  --muted:         #7d5a62;
+  --accent:        #7b2d3b;
+  --accent-strong: #5e1f2c;
+  --accent-soft:   #ecd5d6;
+  --on-accent:     #fff6f2;
+  --border:        rgba(123, 45, 59, .18);
+  --shadow:        0 10px 24px -12px rgba(94, 31, 44, .55);
+  --shadow-soft:   0 6px 18px -12px rgba(94, 31, 44, .45);
+  --live:          #e0455f;
+  --live-glow:     rgba(224, 69, 95, .45);
+  --hero-tint:     rgba(94, 31, 44, .10);
+}
+
+/* ---------- Бордо · тёмная (вино) ---------- */
+:root[data-palette="bordeaux"][data-theme="dark"] {
+  --bg:            #1d0f13;
+  --bg-outer:      #140a0d;
+  --surface:       #2b161c;
+  --surface-hover: #351b23;
+  --text:          #f4e6e1;
+  --muted:         #bd9ea3;
+  --accent:        #a8475a;
+  --accent-strong: #c25a6e;
+  --accent-soft:   #3e1d26;
+  --on-accent:     #fff3f0;
+  --border:        rgba(244, 230, 225, .14);
+  --shadow:        0 10px 24px -12px rgba(0, 0, 0, .8);
+  --shadow-soft:   0 6px 18px -12px rgba(0, 0, 0, .7);
+  --live:          #ff6b86;
+  --live-glow:     rgba(255, 107, 134, .45);
+  --hero-tint:     rgba(0, 0, 0, .18);
+}
+
+/* Шаблон для новой палитры (раскомментируй и поменяй цвета):
+
+:root[data-palette="rose"][data-theme="light"] { ... все переменные ... }
+:root[data-palette="rose"][data-theme="dark"]  { ... все переменные ... }
+*/
