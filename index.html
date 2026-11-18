@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- data-palette должен совпадать с theme.palette в config.js: до загрузки скрипта страница красится этим значением -->
 <html lang="ru" data-palette="bordeaux">
 <head>
   <meta charset="utf-8">
@@ -30,7 +31,8 @@
   <link rel="icon" href="assets/favicon.png" type="image/png">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 
-  <!-- Тема ставится ДО отрисовки, чтобы не было вспышки светлой темы -->
+  <!-- Тема ставится ДО отрисовки, чтобы не было вспышки светлой темы.
+       Цвета theme-color ниже = --bg из css/themes.css (светлая и тёмная тема). -->
   <script>
     (function () {
       try {

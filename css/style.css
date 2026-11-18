@@ -1,8 +1,50 @@
 /* =====================================================================
    Стили страницы. Цвета берутся ТОЛЬКО из переменных (см. themes.css).
+
+   Слои (z-index), от нижнего к верхнему:
+     -2 фото в шапке · -1 затемнение шапки, блик кнопки, рамка live (внутри своих блоков)
+      5 кнопка темы над фото · 50 подсказка «скопировано» поверх всего
+   Новый слой ставь по этой шкале.
    ===================================================================== */
 
+/* =====================================================================
+   ПАРАМЕТРЫ — всё, что можно подкрутить, собрано здесь.
+   Время: "s" — секунды (.44s), "ms" — миллисекунды (440ms). Больше = медленнее.
+   Как подбирать на глаз — см. README, раздел «Как подобрать скорость анимаций».
+   ===================================================================== */
+:root {
+  /* Анимации */
+  --blink-duration: 2.4s;    /* точка в бейдже «В ЭФИРЕ»: один полный цикл мигания */
+  --hover-duration: .44s;    /* кнопка при наведении: подъём и тень (и возврат обратно) */
+  --shine-duration: 1.4s;    /* блик, пробегающий по кнопке при наведении */
+  --icon-duration:  .5s;     /* значок на кнопке при наведении */
+  --press-duration: .15s;    /* нажатие на кнопку (специально быстрее) */
+  --pop-duration:   .4s;     /* галочка после копирования номера карты */
+  --ease: cubic-bezier(.2, .8, .2, 1);   /* «характер» движения: быстрый старт, мягкая остановка */
+  --lift: -2px;              /* на сколько кнопка приподнимается при наведении */
+  --icon-hover-scale: 1.12;  /* во сколько раз значок увеличивается при наведении (1 = не увеличивать) */
+
+  /* Размеры кнопки (у ВСЕХ кнопок одинаковые) */
+  --btn-height: 56px;        /* высота кнопки */
+  --btn-radius: 18px;        /* скругление */
+  --btn-pad-x: 18px;         /* боковые поля внутри кнопки */
+  --btn-gap: 12px;           /* расстояние между значком и текстом */
+
+  /* Вертикальные отступы в группе. Все три - ВИДИМЫЙ зазор между буквами/кнопкой (в px):
+     от низа букв верхнего элемента (с учётом «хвостов» р, у, д) до верха букв нижнего.
+     Скрипт (equalizeGaps в app.js) сам подгоняет каждую группу под эти числа, так что
+     они не зависят от шрифта и от размера строк. Только в px, без rem и %. */
+  --gap-title-note: 10px;    /* заголовок группы -> подпись (note) */
+  --gap-head-list:  14px;    /* низ шапки (подпись, а если её нет - заголовок) -> первая кнопка */
+  --caption-gap: 6px;        /* в кнопке с двумя строками: основная строка <-> дополнительная
+                                (тот же принцип: видимый зазор в px между буквами) */
+  --icon-w: 28px;            /* место под значок: ширина... */
+  --icon-h: 24px;            /* ...и высота (сам значок стоит по центру этого места) */
+}
+
 *, *::before, *::after { box-sizing: border-box; }
+
+[hidden] { display: none !important; }
 
 html { -webkit-text-size-adjust: 100%; }
 
@@ -20,8 +62,18 @@ body {
 
 a { color: inherit; }
 
-.icon { width: 1.3em; height: 1.3em; flex: none; }
-.icon svg { width: 100%; height: 100%; display: block; }
+/* ---------- Значки ----------
+   Значок — это «место» фиксированного размера, внутри которого картинка стоит по центру.
+   Размер каждого значка в пикселях задан в js/icons.js (brand(...) и line(...)). */
+.icon {
+  flex: none;
+  width: var(--icon-w);
+  height: var(--icon-h);
+  display: grid;
+  place-items: center;
+}
+.icon svg { display: block; }
+.icon svg:not([width]) { width: 24px; height: 24px; }
 
 /* ---------- Колонка ---------- */
 .page {
@@ -47,7 +99,7 @@ a { color: inherit; }
 .hero {
   position: relative;
   aspect-ratio: 4 / 5;
-  max-height: 640px;
+  max-height: 480px;
   width: 100%;
   background: var(--accent-soft);
   isolation: isolate;
@@ -123,10 +175,10 @@ html[data-theme="dark"] .hero__tagline { color: var(--accent-strong); }
 }
 .theme-toggle:hover { background: rgba(40, 14, 20, .55); transform: rotate(12deg); }
 .theme-toggle:active { transform: scale(.92); }
-.theme-toggle .icon { width: 20px; height: 20px; }
+.theme-toggle .icon { width: 24px; height: 24px; }   /* место под значок; размер самого значка - в js/icons.js */
 .theme-toggle .icon--moon { display: none; }
 html[data-theme="light"] .theme-toggle .icon--sun { display: none; }
-html[data-theme="light"] .theme-toggle .icon--moon { display: block; }
+html[data-theme="light"] .theme-toggle .icon--moon { display: grid; }
 
 /* ---------- Контент ---------- */
 .content {
@@ -141,62 +193,20 @@ html[data-theme="light"] .theme-toggle .icon--moon { display: block; }
   text-align: center;
   color: var(--muted);
   font-size: .98rem;
+  white-space: pre-line;         /* "\n" в тексте из config.js превращается в перенос строки */
 }
-
-/* ---------- Расписание ---------- */
-.schedule {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 14px 16px;
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  background: var(--surface);
-  box-shadow: var(--shadow-soft);
-}
-
-.schedule__icon {
-  display: grid; place-items: center;
-  width: 46px; height: 46px;
-  border-radius: 14px;
-  background: var(--accent-soft);
-  color: var(--accent);
-  flex: none;
-}
-html[data-theme="dark"] .schedule__icon { color: var(--accent-strong); }
-.schedule__icon .icon { width: 24px; height: 24px; }
-
-.schedule__label {
-  margin: 0;
-  font-size: .72rem;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  color: var(--muted);
-  font-weight: 600;
-}
-.schedule__when {
-  margin: 2px 0 0;
-  font-weight: 700;
-  font-size: 1.05rem;
-  line-height: 1.25;
-}
-.schedule__sub {
-  margin: 2px 0 0;
-  font-size: .85rem;
-  color: var(--muted);
-}
-.schedule__sub:empty { display: none; }
 
 /* ---------- Группа ссылок ---------- */
 .group { position: relative; isolation: isolate; }
 
-.group__head {
+.group__head { margin-bottom: 0; }   /* настоящий отступ до кнопок ставит скрипт (--gap-head-list) */
+
+.group__titlebar {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
   flex-wrap: wrap;
-  margin-bottom: 4px;
 }
 
 .group__title {
@@ -209,12 +219,12 @@ html[data-theme="dark"] .schedule__icon { color: var(--accent-strong); }
 html[data-theme="dark"] .group__title { color: var(--text); }
 
 .group__note {
-  margin: 0 0 12px;
+  margin: 0;                     /* отступ от заголовка ставит скрипт (--gap-title-note) */
   text-align: center;
   font-size: .88rem;
   color: var(--muted);
+  white-space: pre-line;         /* "\n" в тексте из config.js превращается в перенос строки */
 }
-.group__title + .group__list { margin-top: 12px; }
 
 .group__list {
   display: flex;
@@ -225,32 +235,90 @@ html[data-theme="dark"] .group__title { color: var(--text); }
   list-style: none;
 }
 
-/* ---------- Кнопка-ссылка ---------- */
+/* =====================================================================
+   КНОПКА — единый стиль для ссылок, расписания и карты.
+   Высота у всех одинаковая (--btn-height): одна строка текста или две —
+   неважно. Две строки = основной текст + дополнительный (.btn__caption).
+   ===================================================================== */
 .btn {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 12px;
-  min-height: 56px;
-  padding: 12px 18px;
-  border-radius: 18px;
-  text-decoration: none;
+  gap: var(--btn-gap);
+  width: 100%;
+  min-height: var(--btn-height);
+  margin: 0;
+  padding: 6px var(--btn-pad-x);
+  border: 0;
+  border-radius: var(--btn-radius);
+  font: inherit;
   font-weight: 600;
   font-size: 1.02rem;
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+  color: var(--btn-text);
+  background: linear-gradient(135deg, var(--btn-from), var(--btn-to));
+  box-shadow: var(--btn-shadow);
+  cursor: pointer;
   overflow: hidden;
   isolation: isolate;
   -webkit-tap-highlight-color: transparent;
-  transition: transform .22s cubic-bezier(.2, .8, .2, 1),
-              box-shadow .22s ease,
-              background-color .22s ease,
-              border-color .22s ease,
-              color .22s ease;
+  transition: transform var(--hover-duration) var(--ease),
+              box-shadow var(--hover-duration) var(--ease);
 }
 
-.btn__label { flex: 1; text-align: center; padding-right: calc(1.3em + 12px); }
-.btn .icon { transition: transform .25s cubic-bezier(.2, .8, .2, 1); }
+.btn .icon { transition: transform var(--icon-duration) var(--ease); }
 
-/* блик */
+/* Текст кнопки. Правый отступ равен ширине значка слева, чтобы текст стоял
+   по центру самой кнопки. Если справа тоже есть значок (карта) — отступ не нужен. */
+.btn__text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;           /* строки по центру; если не влезают — выступают в обе стороны поровну */
+  gap: 0;                        /* отступ между строками задаёт --caption-gap (см. app.js) */
+  padding-right: calc(var(--icon-w) + var(--btn-gap));
+}
+.btn--end-icon .btn__text { padding-right: 0; }
+
+/* Строки текста не переносятся; если не влезают по ширине, скрипт (fitText в app.js)
+   чуть уменьшает размер шрифта. */
+.btn__fit { white-space: nowrap; }
+
+.btn__main { display: block; }
+
+/* ДОПОЛНИТЕЛЬНЫЙ ТЕКСТ — один стиль для всех кнопок:
+   «Следующий музыкальный стрим», «Т-Банк (Анастасия Г.)», «(для вопросов и предложений)».
+   Заглавными буквами он шире: на экранах от 360px показываем заглавными,
+   на более узких — обычным регистром. */
+.btn__caption {
+  display: block;
+  font-size: .7rem;
+  font-weight: 600;
+  letter-spacing: .02em;
+  opacity: .82;
+}
+@media (min-width: 360px) {
+  .btn__caption {
+    text-transform: uppercase;
+    letter-spacing: .08em;
+  }
+}
+
+.btn--static .btn__main { font-weight: 700; }
+
+.btn__number {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: .04em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Блик: в покое спрятан за краем и возвращается на место мгновенно,
+   а при наведении плавно пробегает слева направо. */
 .btn::after {
   content: "";
   position: absolute;
@@ -259,40 +327,46 @@ html[data-theme="dark"] .group__title { color: var(--text); }
   z-index: -1;
   background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .28), transparent);
   transform: skewX(-18deg);
-  transition: left .7s ease;
 }
 
-.btn:hover { transform: translateY(-2px); }
-.btn:hover::after { left: 130%; }
-.btn:hover .icon { transform: scale(1.12) rotate(-6deg); }
-.btn:active { transform: translateY(0) scale(.98); }
-.btn:focus-visible, .copycard:focus-visible, .theme-toggle:focus-visible {
+/* Интерактивные кнопки реагируют на наведение. Расписание (.btn--static) — нет:
+   оно не ссылка, и пусть не обещает действия. */
+.btn:not(.btn--static):hover {
+  transform: translateY(var(--lift));
+  box-shadow: var(--btn-shadow-hover);
+}
+.btn:not(.btn--static):hover::after {
+  left: 130%;
+  transition: left var(--shine-duration) ease;
+}
+.btn:not(.btn--static):hover .icon { transform: scale(var(--icon-hover-scale)); }
+.btn:not(.btn--static):active {
+  transform: translateY(0) scale(.98);
+  transition-duration: var(--press-duration);
+}
+
+.btn--static { cursor: default; }
+
+.btn:focus-visible, .theme-toggle:focus-visible {
   outline: 3px solid var(--accent-strong);
   outline-offset: 3px;
 }
 
-.btn--filled {
-  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
-  color: var(--on-accent);
-  box-shadow: var(--shadow);
-}
-.btn--filled:hover { box-shadow: 0 14px 28px -12px rgba(94, 31, 44, .7); }
-
-.btn--soft {
-  background: var(--surface);
-  color: var(--text);
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow-soft);
-}
-.btn--soft .icon { color: var(--accent); }
-html[data-theme="dark"] .btn--soft .icon { color: var(--accent-strong); }
-.btn--soft:hover {
-  background: var(--surface-hover);
-  border-color: var(--accent);
-  box-shadow: var(--shadow);
+/* Карта: две иконки (копировать / галочка) делят одно место справа */
+.btn .icon--check { display: none; }
+.btn.is-copied .icon--copy { display: none; }
+.btn.is-copied .icon--check {
+  display: grid;
+  animation: pop var(--pop-duration) var(--ease);
 }
 
-/* ---------- «В эфире»: подсветка группы ---------- */
+@keyframes pop {
+  0%   { transform: scale(.4); }
+  60%  { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+
+/* ---------- «В эфире»: рамка вокруг группы (статичная) + бейдж ---------- */
 .badge-live {
   display: none;
   align-items: center;
@@ -310,35 +384,30 @@ html[data-theme="dark"] .btn--soft .icon { color: var(--accent-strong); }
   width: 8px; height: 8px;
   border-radius: 50%;
   background: #fff;
-  animation: blink 1.2s ease-in-out infinite;
+  animation: blink var(--blink-duration) ease-in-out infinite;
 }
 
-/* Рамка и свечение — на отдельном слое, чтобы не конфликтовать с анимацией появления (.reveal) */
+/* Рамка и свечение — на отдельном слое (::before), чтобы не конфликтовать
+   с анимацией появления (.reveal) самой группы. */
 .group.is-live::before {
   content: "";
   position: absolute;
   inset: -14px -10px -12px;
   z-index: -1;
   border-radius: 26px;
-  border: 1.5px solid var(--live);
+  border: 2px solid var(--live);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--live) 14%, transparent),
+              0 0 26px -2px var(--live-glow);
   pointer-events: none;
-  animation: glow 2.2s ease-in-out infinite;
 }
 .group.is-live .badge-live { display: inline-flex; }
-.group.is-live .btn--filled {
-  background: linear-gradient(135deg, var(--live), var(--accent-strong));
-}
 
 @keyframes blink { 50% { opacity: .25; } }
-@keyframes glow {
-  0%, 100% { box-shadow: 0 0 0 0 transparent, 0 0 18px -6px var(--live-glow); }
-  50%      { box-shadow: 0 0 0 6px color-mix(in srgb, var(--live) 12%, transparent), 0 0 28px -4px var(--live-glow); }
-}
 
 /* ---------- YouTube ---------- */
-.video { position: relative; }
 .video__frame {
   position: relative;
+  margin-top: 0;                 /* отступ от шапки ставит скрипт (--gap-head-list) */
   aspect-ratio: 16 / 9;
   border-radius: 20px;
   overflow: hidden;
@@ -359,75 +428,18 @@ html[data-theme="dark"] .btn--soft .icon { color: var(--accent-strong); }
   color: var(--muted);
 }
 
-/* ---------- Карта (копирование) ---------- */
-.copycard {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  width: 100%;
-  margin-top: 14px;
-  padding: 14px 16px;
-  text-align: left;
-  font: inherit;
-  color: var(--text);
-  background: var(--surface);
-  border: 1.5px dashed var(--accent);
-  border-radius: 20px;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-  transition: transform .2s ease, background-color .2s ease, box-shadow .2s ease;
-}
-.copycard:hover { background: var(--surface-hover); box-shadow: var(--shadow); transform: translateY(-2px); }
-.copycard:active { transform: scale(.985); }
-
-.copycard__main { flex: 1; min-width: 0; }
-.copycard__bank {
-  display: block;
-  font-size: .72rem;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  color: var(--muted);
-  font-weight: 600;
-}
-.copycard__number {
-  display: block;
-  margin: 2px 0;
-  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-  font-weight: 700;
-  font-size: clamp(1.05rem, 5.2vw, 1.3rem);
-  letter-spacing: .04em;
-  font-variant-numeric: tabular-nums;
-}
-.copycard__holder { display: block; font-size: .85rem; color: var(--muted); }
-
-.copycard__action {
-  display: grid; place-items: center;
-  width: 44px; height: 44px;
-  border-radius: 14px;
-  color: var(--on-accent);
-  background: var(--accent);
-  flex: none;
-  transition: background-color .2s ease, transform .2s ease;
-}
-.copycard__action .icon { width: 22px; height: 22px; }
-.copycard__action .icon--check { display: none; }
-.copycard.is-copied .copycard__action { background: #2e7d4f; transform: scale(1.08); }
-.copycard.is-copied .icon--copy { display: none; }
-.copycard.is-copied .icon--check { display: block; }
-
-.copycard__hint {
-  margin: 6px 0 0;
-  text-align: center;
-  font-size: .78rem;
-  color: var(--muted);
+/* Блок появляется только после успешной пробы доступности YouTube */
+.video.is-ready { animation: fade-in .5s ease both; }
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
 }
 
 /* ---------- Подвал, тост ---------- */
 .footer {
   padding: 4px 18px calc(26px + env(safe-area-inset-bottom, 0px));
   text-align: center;
-  font-size: .8rem;
+  font-size: .88rem;
   color: var(--muted);
 }
 
@@ -440,7 +452,7 @@ html[data-theme="dark"] .btn--soft .icon { color: var(--accent-strong); }
   border-radius: 999px;
   font-size: .92rem;
   font-weight: 600;
-  color: var(--on-accent);
+  color: var(--btn-text);
   background: var(--accent-strong);
   box-shadow: var(--shadow);
   opacity: 0;
@@ -448,6 +460,7 @@ html[data-theme="dark"] .btn--soft .icon { color: var(--accent-strong); }
   pointer-events: none;
   transition: opacity .25s ease, transform .25s ease;
 }
+html[data-theme="dark"] .toast { background: var(--btn-from); }
 .toast.is-visible { opacity: 1; transform: translate(-50%, 0); }
 
 /* ---------- Появление при загрузке ---------- */
