@@ -14,7 +14,7 @@ window.SITE_CONFIG = {
          "Вне стримов - мама и просто хороший человек. " +
          "Заглядывай на Ванильные стримы - у нас уютно и комфортно 🕊️",
     // bio: "Привет ✨ Меня зовут Настя. Пою кавера, пишу свои песни и рисую на холстах 🎨 Вне стримов - мама и просто хороший человек. Заглядывай на Ванильные стримы - у нас уютно и комфортно 🕊️",
-    heroImage: "assets/hero.jpg",
+    heroImage: "assets/hero.webp",      // если меняешь имя файла, поменяй и <link rel="preload"> в index.html
     // Какую часть фото показывать в шапке: "X% Y%". Меньше Y - выше, больше Y - ниже.
     heroPosition: "0% 52%",
     heroAlt: "Vanilla Bun"
@@ -43,7 +43,8 @@ window.SITE_CONFIG = {
              Если разовый стрим совпал по времени с обычным, показывается разовый.
      skip  - даты (мск), когда обычного стрима НЕ будет: "2026-11-19".
 
-     weekdayStyle: "short" (вс, чт) или "long" (воскресенье, четверг).
+     weekdayStyle: "auto" (по умолчанию: полные дни недели, а если строка не помещается - короткие),
+                   "long" (всегда воскресенье, четверг) или "short" (всегда вс, чт).
                    Полные названия на узких телефонах в одну строку не помещаются.
 
      Где показывается расписание, задаётся у группы ссылок: showSchedule: true. */
@@ -51,7 +52,7 @@ window.SITE_CONFIG = {
     utcOffsetMinutes: 180,
     tzLabel: "мск",
     durationMinutes: 180,
-    weekdayStyle: "long",
+    weekdayStyle: "auto",
     // Здесь по умолчанию "above" (подпись над датой), а у обычных ссылок и карты - "below" (под текстом).
     captionPosition: "above",           // подпись над датой ("above") или под ней ("below")
     fallbackLabel: "Следующий стрим",   // если у стрима неизвестный тип
@@ -87,7 +88,7 @@ window.SITE_CONFIG = {
 
   /* ---------- Блоки страницы (сверху вниз) ----------
      type: "links"   - группа кнопок
-     type: "youtube" - последний ролик с канала (показывается, только если YouTube доступен)
+     type: "streams" - главный кадр и ряд миниатюр последних стримов (данные: data/streams.json)
      enabled: false  - у любого блока: временно убрать его со страницы, не удаляя из файла
      liveHighlight: true - группа получает рамку и бейдж, когда включён режим «в эфире»
      showSchedule:  true - внизу группы появляется кнопка с датой ближайшего стрима
@@ -116,20 +117,17 @@ window.SITE_CONFIG = {
       ]
     },
 
-    /* Последний ролик. Перед показом страница пробует загрузить картинку с YouTube
-       (probeUrl). Загрузилась за probeTimeoutMs - блок показывается.
-       Не загрузилась (YouTube недоступен) - блок скрывается целиком.
-       Проверить оба случая: ?yt=on (показать) и ?yt=off (скрыть) в адресе.
-       Сейчас блок выключен (enabled: false); поставь true, чтобы вернуть. */
+    /* Прошедшие стримы: главный кадр и ряд миниатюр (подробности - README, «Блок стримов»).
+       Данные и картинки обновляет GitHub Action (вкладка Actions -> «Обновить превью стримов»
+       -> Run workflow); channelId нужен только ему. count - сколько стримов показывать (2-4). */
     {
-      type: "youtube",
-      enabled: false,
-      id: "latest-video",
-      title: "Последний ролик",
+      type: "streams",
+      id: "recent-streams",
+      title: "Прошедшие стримы",
       channelId: "UCmyC498PNl_U_OsuwzJAmGw",
-      channelUrl: "https://youtube.com/@_vanilla_bun_",
-      probeUrl: "https://i.ytimg.com/vi/jNQXAC9IVRw/default.jpg",   // обложка самого первого видео на YouTube
-      probeTimeoutMs: 4000
+      count: 4,
+      dataUrl: "data/streams.json",
+      moreUrl: "https://youtube.com/@_vanilla_bun_/streams"
     },
 
     {
@@ -138,10 +136,10 @@ window.SITE_CONFIG = {
       title: "Общение",
       note: "Здесь мы общаемся, выходят анонсы, фото и видео",
       links: [
-        { title: "VK сообщество",         url: "https://vk.ru/vanilla__bun",                icon: "vk" },
+        { title: "VK сообщество",          url: "https://vk.ru/vanilla__bun",                icon: "vk" },
         { title: "Telegram - канал",      url: "https://t.me/Vanilla_Bun_Channel",          icon: "telegram" },
         { title: "Telegram - чат",        url: "https://t.me/+FaVk_Y1WB2FhNWMy",            icon: "telegram" },
-        { title: "Telegram - предложка",  url: "https://t.me/Vanilla_Bun_Channel?direct",   icon: "telegram",
+        { title: "Telegram - предложка",  url: "https://t.me/Vanilla_Bun_Channel?direct",    icon: "telegram",
           caption: "(для вопросов и предложений)" }
       ]
     },
@@ -173,7 +171,8 @@ window.SITE_CONFIG = {
       title: "Поддержать",
       // note: строка, либо массив строк (каждая с новой строки), либо "\n" внутри строки
       note: [
-        "Поддержать Ванильку, её творчество и все задуманные идеи"
+        "Поддержать Ванильку, её творчество и все",
+        "задуманные идеи можно по ссылочкам ниже"
       ],
       links: [
         { title: "DonationAlerts", url: "https://www.donationalerts.com/r/vanilla_bun_", icon: "donationalerts" },

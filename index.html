@@ -28,6 +28,10 @@
   <meta name="twitter:description" content="Кавера, свои песни и уютные стримы. Четверг и воскресенье в 19:00 (МСК).">
   <meta name="twitter:image" content="https://vanilla-bun.github.io/linkbio/assets/og.jpg">
 
+  <!-- Фото в шапке грузится заранее: иначе браузер узнал бы о нём только после работы скриптов.
+       Адрес должен совпадать с profile.heroImage в config.js (поменял там - поменяй и здесь). -->
+  <link rel="preload" as="image" href="assets/hero.webp" fetchpriority="high">
+
   <link rel="icon" href="assets/favicon.png" type="image/png">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 
@@ -50,6 +54,12 @@
 
   <link rel="stylesheet" href="css/themes.css">
   <link rel="stylesheet" href="css/style.css">
+
+  <!-- defer: скрипты скачиваются сразу, параллельно со страницей, а выполняются после её разбора, строго по порядку -->
+  <script defer src="config.js"></script>
+  <script defer src="js/icons.js"></script>
+  <script defer src="js/schedule.js"></script>
+  <script defer src="js/app.js"></script>
 </head>
 <body>
   <div class="page" id="page">
@@ -69,9 +79,5 @@
     </p>
   </noscript>
 
-  <script src="config.js"></script>
-  <script src="js/icons.js"></script>
-  <script src="js/schedule.js"></script>
-  <script src="js/app.js"></script>
 </body>
 </html>

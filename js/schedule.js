@@ -120,7 +120,7 @@
     if (!next) return null;
 
     var tz = cfg.tzLabel || "МСК";
-    var names = cfg.weekdayStyle === "long" ? WEEKDAYS_LONG : WEEKDAYS_SHORT;
+    var names = cfg.weekdayStyle === "short" ? WEEKDAYS_SHORT : WEEKDAYS_LONG;
     var offset = offsetOf(cfg);
 
     var wall = utcToWall(next.start.getTime(), offset);

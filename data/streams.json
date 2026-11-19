@@ -1,0 +1,28 @@
+{
+  "streams": [
+    {
+      "id": "4idgoK6SDFM",
+      "published": "2026-11-15T19:22:00.000Z",
+      "url": "https://www.youtube.com/watch?v=4idgoK6SDFM",
+      "thumb": "data/streams/4idgoK6SDFM.webp"
+    },
+    {
+      "id": "TeoD6rBDbHE",
+      "published": "2026-11-05T21:02:58.000Z",
+      "url": "https://www.youtube.com/watch?v=TeoD6rBDbHE",
+      "thumb": "data/streams/TeoD6rBDbHE.webp"
+    },
+    {
+      "id": "hGJf_-8i4lo",
+      "published": "2026-11-01T22:04:03.000Z",
+      "url": "https://www.youtube.com/watch?v=hGJf_-8i4lo",
+      "thumb": "data/streams/hGJf_-8i4lo.webp"
+    },
+    {
+      "id": "3PRGeSOi_p0",
+      "published": "2026-10-29T22:02:15.000Z",
+      "url": "https://www.youtube.com/watch?v=3PRGeSOi_p0",
+      "thumb": "data/streams/3PRGeSOi_p0.webp"
+    }
+  ]
+}
